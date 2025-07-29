@@ -59,7 +59,26 @@ class Ingredient:
         else:
             raise ValueError ("Invalid Entry - recipes_found_in")
     
+    @classmethod
+    def _row_from_db(cls, row):
+        CURSOR.execute("SELECT * FROM ingredients")
+        ingredient = cls(row[1], row[2], row[3])
+        ingredient.id = row[0]
+        return ingredient
     
+    
+    @classmethod
+    def find_by_id(cls, id):
+        CURSOR.execute("SELECT * FROM ingredients WHERE id = ?", (id,))
+        row = CURSOR.fetchone()
+        if row:
+            return cls._row_from_db(row)
+        else:
+            return None
+    
+    @classmethod
+    def 
+
 
     
     def save(self):
