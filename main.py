@@ -4,10 +4,9 @@ from lib.models.recipe import Recipe
 from lib.models.recipe_ingredient import RecipeIngredient
 
 def run():
-    r = Recipe.find_by_name("Banana Bread")
-    r.add_ingredient_to_recipe("banana", "3 units")
+    print(RecipeIngredient.get_all())
 
-    
+
 
 if __name__ == "__main__":
     run()

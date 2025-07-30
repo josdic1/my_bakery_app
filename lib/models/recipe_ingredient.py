@@ -42,7 +42,7 @@ class RecipeIngredient:
 
     @quantity.setter
     def quantity(self, value):
-        if isinstance (value, int) and value > 0: 
+        if isinstance (value, str) and value.strip(): 
             self._quantity = value
         else:
             raise ValueError ("Invalid Entry - quantity")
