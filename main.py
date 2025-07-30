@@ -1,16 +1,18 @@
 # main.py
 from lib.models.ingredient import Ingredient
 from lib.models.recipe import Recipe
+from lib.models.recipe_ingredient import RecipeIngredient
 
 def run():
-    print("🧪 Ingredients:")
-    print(Ingredient.get_all())
+    r = Recipe.find_by_name("Banana Bread")
+    r.add_ingredient_to_recipe("banana", "3 units")
 
-    print("🧪 Recipes:")
-    print(Recipe.get_all())
+    
 
 if __name__ == "__main__":
     run()
+
+
 
     
 

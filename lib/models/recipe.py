@@ -1,6 +1,7 @@
 import sqlite3
 from lib.models import CONN, CURSOR
-
+from lib.models.ingredient import Ingredient
+from lib.models.recipe_ingredient import RecipeIngredient
 
 class Recipe:
     def __init__(self, name, type, steps):
@@ -87,6 +88,16 @@ class Recipe:
         recipe = cls(name, type, steps)
         recipe.save()
         return recipe
+    
+    def add_ingredient_to_recipe(self, ingredient_name, quantity):
+        ing = Ingredient.find_by_name(ingredient_name)
+        if not ing:
+            ing = Ingredient.add_new(ingredient_name)
+        RecipeIngredient.add_new(self.id, ing.id, quantity)
+
+
+        
+
     
 
     def update(self):

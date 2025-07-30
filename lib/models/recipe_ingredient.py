@@ -53,6 +53,9 @@ class RecipeIngredient:
         recipe_ingredient.id = row[0]
         return recipe_ingredient
 
+    @classmethod
+    def find_ingredient(cls):
+        print(Ingredient.get_all())
 
     @classmethod
     def get_all(cls):
@@ -78,7 +81,6 @@ class RecipeIngredient:
             return cls._row_from_db(row)
         else:
             return None
-
 
     @classmethod
     def add_new(cls, recipe_id, ingredient_id, quantity):
