@@ -10,7 +10,7 @@ class Recipe:
         self.id = None
 
     def __repr__(self):
-        return f"Recipes: {self.name} {self._type} {self._steps}"
+        return f"Recipes: {self.name} | {self.type} | {self.steps}"
     
 
     @property

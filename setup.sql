@@ -20,6 +20,11 @@ CREATE TABLE IF NOT EXISTS recipes (
 
 CREATE TABLE IF NOT EXISTS recipe_ingredients (
     id INTEGER PRIMARY KEY,
+    recipe_id INTEGER,
+    ingredient_id INTEGER,
+    FOREIGN KEY (recipe_id) REFERENCES recipes (id),
+    FOREIGN KEY (ingredient_id) REFERENCES ingredients (id),
+    UNIQUE(recipe_id, ingredient_id)
 )
 
 CREATE TABLE IF NOT EXISTS employees (

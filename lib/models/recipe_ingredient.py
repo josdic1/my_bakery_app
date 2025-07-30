@@ -1,83 +1,57 @@
+import sqlite3
 from lib.models import CONN, CURSOR
+from lib.models.ingredient import Ingredient
 
-class Ingredient:
-    def __init__(self, name, quantity, unit, recipes_found_in):
-        self.name = name
-        self.quantity = quantity
-        self.unit = unit
-        self.recipes_found_in = recipes_found_in
+class RecipeIngredient:
+    def __init__(self, recipe_id, ingredient_id):
+        self.recipe_id = recipe_id
+        self.ingredient_id = ingredient_id
         self.id = None
 
     def __repr__(self):
-        return f"Ingredients: {self._name} | {self._quantity} | {self._unit} | {self._recipes_found_in} | {self.id}"
+        return f"RecipeIngredients: {self.recipe_id} | {self.ingredient_id}"
 
 
     @property
-    def name(self):
-        return self._name
+    def recipe_id(self):
+        return self._recipe_id
 
-    @name.setter
-    def name(self, value):
-        if isinstance (value, str) and value.strip():
-            self._name = value
+    @recipe_id.setter
+    def recipe_id(self, value):
+        if isinstance (value, int) and value > 0:
+            self._recipe_id = value
         else:
-            raise ValueError ("Invalid Entry - name")
+            raise ValueError ("Invalid Entry - recipe_id")
     
 
     @property
-    def quantity(self):
-        return self._quantity
+    def ingredient_id(self):
+        return self._ingredient_id
 
-    @quantity.setter
-    def quantity(self, value):
-        if isinstance (value, str) and value > 0: 
-            self._quantity = value
+    @ingredient_id.setter
+    def ingredient_id(self, value):
+        if isinstance (value, int) and value > 0: 
+            self._ingredient_id = value
         else:
-            raise ValueError ("Invalid Entry - quantity")
+            raise ValueError ("Invalid Entry - ingredient_id")
         
-
-    @property
-    def unit(self):
-        return self._unit
-
-    @unit.setter
-    def unit(self, value):
-        if isinstance (value, str) and value.strip():
-            self._unit = value
-        else:
-            raise ValueError ("Invalid Entry - unit")
-
-
-    @property
-    def recipes_found_in(self):
-        return self._recipes_found_in
-
-    @recipes_found_in.setter
-    def recipes_found_in(self, value):
-        if isinstance (value, str) and value.strip(): 
-            self._recipes_found_in = value
-        else:
-            raise ValueError ("Invalid Entry - recipes_found_in")
-    
-
     @classmethod
     def _row_from_db(cls, row):
-        CURSOR.execute("SELECT * FROM ingredients")
-        ingredient = cls(row[1], row[2], row[3])
-        ingredient.id = row[0]
-        return ingredient
+        recipe_ingredient = cls(row[1], row[2])
+        recipe_ingredient.id = row[0]
+        return recipe_ingredient
 
 
     @classmethod
     def get_all(cls):
-        CURSOR.execute("SELECT * FROM ingredients")
+        CURSOR.execute("SELECT * FROM recipe_ingredients")
         rows = CURSOR.fetchall()
         return [cls._row_from_db(row) for row in rows] if rows else []
     
     
     @classmethod
     def find_by_id(cls, id):
-        CURSOR.execute("SELECT * FROM ingredients WHERE id = ?", (id,))
+        CURSOR.execute("SELECT * FROM recipe_ingredients WHERE id = ?", (id,))
         row = CURSOR.fetchone()
         if row:
             return cls._row_from_db(row)
@@ -85,36 +59,39 @@ class Ingredient:
             return None
     
     @classmethod
-    def find_by_name(cls, name):
-        CURSOR.execute("SELECT * FROM ingredients WHERE name = ?", (name,))
+    def find_by_recipe_and_ingredient(cls, recipe_id, ingredient_id):
+        CURSOR.execute("SELECT * FROM recipe_ingredients WHERE recipe_id = ? AND ingredient_id =?", (recipe_id, ingredient_id,))
         row = CURSOR.fetchone()
         if row:
             return cls._row_from_db(row)
         else:
             return None
-    
+
 
     @classmethod
-    def add_new(cls, name, quantity, unit, recipes_found_in):
-        existing = cls.find_by_id(id)
+    def add_new(cls, recipe_id, ingredient_id):
+        existing = cls.find_by_recipe_and_ingredient(recipe_id, ingredient_id)
         if existing:
             return existing
-        ingredient = cls(name, quantity, unit, recipes_found_in)
-        ingredient.save()
-        return ingredient
+        recipe_ingredient = cls(recipe_id, ingredient_id)
+        recipe_ingredient.save()
+        return recipe_ingredient
     
     def update(self):
-        CURSOR.execute("UPDATE ingredients SET name  = ?, quantity  = ?, unit  = ?, recipes_found_in = ? WHERE id = ?", (self._name, self._quantity, self._unit, self._recipes_found_in, self.id,))
+        CURSOR.execute("UPDATE recipe_ingredients SET recipe_id  = ?, ingredient_id = ? WHERE id = ?", (self._recipe_id, self._ingredient_id, self.id,))
         CONN.commit()
 
     def delete(self):
-        CURSOR.execute("DELETE FROm ingredients WHERE id = ?", (self.id,))
+        CURSOR.execute("DELETE FROM recipe_ingredients WHERE id = ?", (self.id,))
         CONN.commit()
 
     def save(self):
-        CURSOR.execute("INSERT INTO ingredients (name, quantity, unit, recipes_found_in)", (self._name, self._quantity, self._unit, self._recipes_found_in))
-        self.id = CURSOR.lastrowid
-        CONN.commit()
+        try:
+            CURSOR.execute("INSERT INTO recipe_ingredients (recipe_id, ingredient_id) VALUES (?, ?)", (self._recipe_id, self._ingredient_id))
+            self.id = CURSOR.lastrowid
+            CONN.commit()
+        except sqlite3.IntegrityError:
+            print("Recipe-ingredient combination already exists")
 
 
 
