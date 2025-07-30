@@ -22,7 +22,7 @@ class ChangeHandler(FileSystemEventHandler):
             try:
                 python_executable = os.path.join(os.getcwd(), '.venv', 'bin', 'python')
                 result = subprocess.run(
-                    [python_executable, "lib/debug.py"],
+                    [python_executable, "debug.py"],
                     capture_output=True,
                     text=True,
                     check=True
@@ -33,7 +33,7 @@ class ChangeHandler(FileSystemEventHandler):
             except subprocess.CalledProcessError as e:
                 print(f"⚠️ ERROR during execution:\n{e.stderr}")
             except Exception as e:
-                print(f"🔥 Failed to run lib/debug.py: {e}")
+                print(f"🔥 Failed to run debug.py: {e}")
             print("==========================================\n")
 
 if __name__ == "__main__":
