@@ -1,3 +1,4 @@
+import sqlite3
 from lib.models import CONN, CURSOR
 
 class Ingredient:
@@ -6,7 +7,7 @@ class Ingredient:
         self.id = None
 
     def __repr__(self):
-        return f"Ingredients: {self._name} | {self.id}"
+        return f"Ingredients: {self.name} | {self.id}"
 
 
     @property
@@ -72,9 +73,11 @@ class Ingredient:
         CONN.commit()
 
     def save(self):
-        CURSOR.execute("INSERT INTO ingredients (name) VALUES (?)", (self._name,))
-        self.id = CURSOR.lastrowid
-        CONN.commit()
-
+        try:
+            CURSOR.execute("INSERT INTO ingredients (name) VALUES (?)", (self._name,))
+            self.id = CURSOR.lastrowid
+            CONN.commit()
+        except sqlite3.IntegrityError:
+            print("Name already exists. Use add_new() or choose a different name.")
 
 

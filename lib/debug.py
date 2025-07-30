@@ -1,4 +1,4 @@
-from lib.models.ingredient import Ingredient
+# from lib.models.ingredient import Ingredient
 
 
 
