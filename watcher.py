@@ -17,12 +17,12 @@ class ChangeHandler(FileSystemEventHandler):
 
         if now - self.last_event > 0.5:
             self.last_event = now
-            print(f"\n🔄 Change detected in {file} — running debug.py")
+            print(f"\n🔄 Change detected in {file} — running main.py")
             print("==========================================")
             try:
                 python_executable = os.path.join(os.getcwd(), '.venv', 'bin', 'python')
                 result = subprocess.run(
-                    [python_executable, "debug.py"],
+                    [python_executable, "main.py"],
                     capture_output=True,
                     text=True,
                     check=True
@@ -33,7 +33,7 @@ class ChangeHandler(FileSystemEventHandler):
             except subprocess.CalledProcessError as e:
                 print(f"⚠️ ERROR during execution:\n{e.stderr}")
             except Exception as e:
-                print(f"🔥 Failed to run debug.py: {e}")
+                print(f"🔥 Failed to run main.py: {e}")
             print("==========================================\n")
 
 if __name__ == "__main__":
@@ -50,3 +50,4 @@ if __name__ == "__main__":
         observer.stop()
         print("\n🛑 Watcher stopped.")
     observer.join()
+
